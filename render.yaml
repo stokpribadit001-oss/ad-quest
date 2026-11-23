@@ -1,0 +1,34 @@
+# AD QUEST on Render (Free plan) + Neon (Free Postgres).
+# Render reads this file when you create a "Blueprint" / New Web Service
+# from the GitHub repo. Env vars marked `sync: false` are NOT stored in
+# git — Render prompts for them in the dashboard; fill them there only.
+services:
+  - type: web
+    name: ad-quest
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Postgres connection string from Neon (owner pastes it directly
+      # into Render — never commit it, never send it in chat).
+      - key: DATABASE_URL
+        sync: false
+      # The first Admin's login Key. The server creates the first Admin
+      # from this value ONLY while the users table is empty.
+      - key: ADMIN_KEY
+        sync: false
+      - key: ADMIN_NAME
+        value: Admin
+      # Optional: external AI for question generation. Leave unset to use
+      # the built-in local template generator (no key, no cost).
+      - key: AI_API_KEY
+        sync: false
+      - key: AI_API_BASE_URL
+        value: https://api.openai.com/v1
+      - key: AI_MODEL
+        value: gpt-4o-mini
